@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Tareas</title>
+    <link rel="stylesheet" href="estilos.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 18px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 5px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .completed {
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Tareas</h1>
+    <form id="taskForm">
+        <input type="text" id="taskInput" placeholder="Escribe una nueva tarea">
+        <button type="submit">Agregar Tarea</button>
+    </form>
+    <ul id="taskList">
+    </ul>
+
+    <script>
+        var tasks = [];
+
+        function addTask(event) {
+            event.preventDefault(); // Evita que el formulario se envíe
+
+            var taskInput = document.getElementById('taskInput');
+            var taskText = taskInput.value.trim();
+
+            if (taskText === "") {
+                alert("Por favor, ingresa una tarea válida.");
+                return;
+            }
+
+            tasks.push({ text: taskText, completed: false });
+            taskInput.value = ""; // Limpia el campo de entrada
+
+            renderTasks();
+        }
+
+        function toggleTaskCompleted(index) {
+            tasks[index].completed = !tasks[index].completed;
+            renderTasks();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderTasks();
+        }
+
+        function renderTasks() {
+            var taskList = document.getElementById('taskList');
+            taskList.innerHTML = "";
+
+            for (var i = 0; i < tasks.length; i++) {
+                var task = tasks[i];
+                var listItem = document.createElement('li');
+                var checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = task.completed;
+                checkbox.addEventListener('change', toggleTaskCompleted.bind(null, i));
+
+                var taskText = document.createElement('span');
+                taskText.textContent = task.text;
+                if (task.completed) {
+                    taskText.classList.add('completed');
+                }
+
+                var deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Eliminar';
+                deleteButton.addEventListener('click', deleteTask.bind(null, i));
+
+                listItem.appendChild(checkbox);
+                listItem.appendChild(taskText);
+                listItem.appendChild(deleteButton);
+
+                taskList.appendChild(listItem);
+            }
+        }
+
+        var taskForm = document.getElementById('taskForm');
+        taskForm.addEventListener('submit', addTask);
+
+        renderTasks();
+    </script>
+</body>
+</html>
